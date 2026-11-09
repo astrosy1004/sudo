@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#061521">
+<title>3조 IoT 스마트 정수기 | VR 프로젝트 전시관</title>
+<style>
+:root{--cyan:#67f2e7;--blue:#79baff;--ink:#061521;--glass:rgba(5,23,37,.78);--line:rgba(144,230,244,.25);--white:#effcff}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04101b;color:var(--white);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}.app{position:relative;width:100%;height:100%;isolation:isolate;background:radial-gradient(ellipse at 50% 42%,#123c50 0,#071b2b 45%,#020912 100%)}
+.topbar{position:absolute;z-index:20;top:0;left:0;right:0;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;background:linear-gradient(180deg,rgba(2,11,19,.88),rgba(2,11,19,.1));pointer-events:none}.topbar>*{pointer-events:auto}.logo{font-size:14px;font-weight:900;letter-spacing:.12em}.logo span{color:var(--cyan)}.top-actions{display:flex;gap:9px}.pill{border:1px solid var(--line);background:rgba(5,25,39,.7);padding:9px 14px;border-radius:30px;font-size:12px;backdrop-filter:blur(12px)}.pill:hover,.pill.active{border-color:var(--cyan);color:var(--cyan)}
+.viewport{position:absolute;inset:0;perspective:950px;perspective-origin:50% 48%;overflow:hidden;touch-action:none;cursor:grab}.viewport.dragging{cursor:grabbing}.world{position:absolute;width:1px;height:1px;left:50%;top:50%;transform-style:preserve-3d;will-change:transform}.room{position:absolute;left:0;top:0;width:1px;height:1px;transform-style:preserve-3d}
+.wall{position:absolute;left:-700px;top:-340px;width:1400px;height:680px;backface-visibility:hidden;overflow:hidden;border:1px solid rgba(120,220,240,.12);background:linear-gradient(180deg,#123b50 0%,#0b2a3c 65%,#092031 100%);box-shadow:inset 0 0 110px rgba(0,0,0,.45)}
+.wall:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 139px,rgba(140,225,240,.06) 140px 141px),linear-gradient(180deg,transparent 0 78%,rgba(80,210,220,.08) 78% 79%,transparent 79%);pointer-events:none}
+.wall.front{transform:translateZ(-700px)}.wall.back{transform:rotateY(180deg) translateZ(-700px)}.wall.right{transform:rotateY(90deg) translateZ(-700px)}.wall.left{transform:rotateY(-90deg) translateZ(-700px)}
+.ceiling{position:absolute;left:-700px;top:-700px;width:1400px;height:1400px;transform:rotateX(90deg) translateZ(340px);background:radial-gradient(ellipse,#1d5368,#0a2639 65%,#061725);border:1px solid var(--line)}
+.floor{position:absolute;left:-700px;top:-700px;width:1400px;height:1400px;transform:rotateX(-90deg) translateZ(340px);background:linear-gradient(135deg,rgba(22,74,91,.8),rgba(4,20,32,.98)),repeating-linear-gradient(0deg,transparent 0 79px,rgba(103,242,231,.1) 80px),repeating-linear-gradient(90deg,transparent 0 79px,rgba(103,242,231,.1) 80px);box-shadow:inset 0 0 180px #020b13}
+.neon-line{position:absolute;left:-560px;top:260px;width:1120px;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);box-shadow:0 0 18px var(--cyan)}
+.room-title{position:absolute;left:-370px;top:-290px;width:740px;text-align:center;color:#c9faff;text-shadow:0 0 22px rgba(103,242,231,.4);font-size:18px;letter-spacing:.35em;font-weight:800}
+.room-title small{display:block;font-size:10px;letter-spacing:.5em;color:#72aebf;margin-top:10px}
+.exhibit{position:absolute;width:390px;min-height:270px;left:-195px;top:-130px;padding:22px 24px;border:1px solid rgba(130,235,240,.45);border-radius:16px;background:linear-gradient(145deg,rgba(6,28,44,.94),rgba(8,46,62,.88));box-shadow:0 20px 60px rgba(0,0,0,.4),inset 0 0 35px rgba(72,211,220,.08);backface-visibility:hidden}
+.exhibit h2{font-size:23px;margin:6px 0 10px;letter-spacing:-.04em}.exhibit p{font-size:13px;line-height:1.7;color:#b5d2dc;margin:0}.tag{display:inline-block;color:var(--cyan);font-size:10px;font-weight:900;letter-spacing:.18em}.wall.front .exhibit{transform:translateZ(698px)}.wall.back .exhibit{transform:translateZ(698px) rotateY(180deg)}.wall.left .exhibit{transform:translateZ(698px) rotateY(90deg)}.wall.right .exhibit{transform:translateZ(698px) rotateY(-90deg)}
+.front .exhibit{top:-120px}.back .exhibit{top:-120px}.left .exhibit{top:-120px}.right .exhibit{top:-120px}
+.feature-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}.feature-list span{padding:8px 10px;border:1px solid rgba(103,242,231,.18);border-radius:8px;font-size:11px;color:#d7faff;background:rgba(103,242,231,.05)}
+/* 중앙 전시 오브젝트 */
+.pedestal{position:absolute;left:-120px;top:75px;width:240px;height:170px;transform-style:preserve-3d}
+.pedestal .top{position:absolute;left:0;top:0;width:240px;height:240px;transform:rotateX(90deg) translateZ(0px);border-radius:50%;background:radial-gradient(ellipse,#4de9e2 0%,#167e94 40%,#092f43 70%);box-shadow:0 0 55px rgba(74,225,224,.25)}
+.pedestal .base{position:absolute;left:20px;top:-22px;width:200px;height:130px;background:linear-gradient(90deg,#0c3347,#1d7180,#09283b);border:1px solid #4bd7d4;transform:translateZ(-55px);box-shadow:0 30px 45px #020b12}
+.purifier{position:absolute;left:-75px;top:-240px;width:150px;height:265px;transform-style:preserve-3d;filter:drop-shadow(20px 24px 20px rgba(0,0,0,.5))}
+.purifier-body{position:absolute;inset:0;border-radius:28px 28px 20px 20px;background:linear-gradient(90deg,#8daeb7,#f4ffff 28%,#c2dce1 68%,#7397a3);border:2px solid #d8ffff;box-shadow:inset -10px 0 20px rgba(4,38,53,.25)}
+.purifier-screen{position:absolute;left:22px;right:22px;top:28px;height:73px;border-radius:12px;background:linear-gradient(145deg,#062234,#0c5264);border:2px solid #83f5ee;box-shadow:0 0 22px rgba(103,242,231,.45);color:#9dfff7;text-align:center;padding:10px 4px;font-size:10px;letter-spacing:.08em}
+.purifier-screen b{display:block;font-size:22px;margin-top:2px;color:#fff}.purifier-tap{position:absolute;top:133px;left:57px;width:36px;height:7px;border-radius:8px;background:#688994;box-shadow:0 20px 0 #688994}.purifier-drop{position:absolute;top:184px;left:68px;width:14px;height:20px;background:#4de8e2;border-radius:70% 30% 65% 35%;transform:rotate(45deg);box-shadow:0 0 20px #4de8e2}
+.halo{position:absolute;left:-240px;top:-80px;width:480px;height:480px;border-radius:50%;border:1px solid rgba(103,242,231,.25);transform:rotateX(76deg);box-shadow:0 0 50px rgba(103,242,231,.12)}
+.hud{position:absolute;z-index:15;left:50%;bottom:105px;transform:translateX(-50%);text-align:center;pointer-events:none}.hud .caption{font-size:12px;color:#b7d4df;text-shadow:0 2px 8px #000}.hud strong{display:block;font-size:17px;letter-spacing:.08em;color:#eaffff}
+.controlbar{position:absolute;z-index:20;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:8px;padding:9px;border:1px solid var(--line);border-radius:18px;background:rgba(3,17,29,.82);backdrop-filter:blur(18px);box-shadow:0 15px 40px rgba(0,0,0,.35);max-width:calc(100% - 24px);overflow-x:auto}
+.controlbar button{white-space:nowrap;border:1px solid transparent;background:rgba(255,255,255,.06);padding:11px 15px;border-radius:11px;font-size:12px}.controlbar button:hover,.controlbar button.active{border-color:var(--cyan);color:var(--cyan);background:rgba(103,242,231,.1)}
+.hint{position:absolute;z-index:15;left:24px;bottom:25px;color:#a8c4cf;font-size:11px;line-height:1.8;text-shadow:0 2px 6px #000}
+.overlay{position:absolute;z-index:30;inset:0;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,8,15,.76);backdrop-filter:blur(12px)}.overlay.show{display:flex}.modal{width:min(760px,100%);max-height:85vh;overflow:auto;border:1px solid var(--line);border-radius:22px;padding:26px;background:linear-gradient(145deg,#10374a,#061a2a);box-shadow:0 25px 80px #000}.modal-head{display:flex;justify-content:space-between;align-items:center;gap:15px}.modal h2{margin:5px 0 16px}.close{border:1px solid var(--line);background:transparent;border-radius:50%;width:36px;height:36px}.modal p{color:#b9d2dc;font-size:14px}.video-frame{width:100%;max-height:55vh;background:#000;border-radius:14px}.upload-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:15px}.upload-row label{display:inline-block;padding:10px 16px;background:var(--cyan);color:#06202a;border-radius:30px;font-size:12px;font-weight:900;cursor:pointer}.upload-row input{max-width:100%;font-size:12px;color:#c4dce4}
+.poster-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.poster{padding:18px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.04)}.poster b{color:var(--cyan);font-size:12px}.poster h3{margin:8px 0}.poster p{margin:0;font-size:13px}
+@media(max-width:700px){.topbar{padding:0 14px;height:60px}.top-actions .pill:nth-child(2){display:none}.hint{display:none}.controlbar{bottom:12px}.controlbar button{padding:10px 12px}.hud{bottom:90px}.exhibit{width:330px;left:-165px;padding:18px}.exhibit h2{font-size:20px}.poster-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+ <div class="topbar"><div class="logo">3조 <span>WATER LAB</span> <span style="color:#8aaebc;font-weight:500"> / VR EXPO</span></div><div class="top-actions"><button class="pill" id="themeBtn">◐ 조명</button><button class="pill" id="fullBtn">⛶ 전체 화면</button></div></div>
+ <div class="viewport" id="viewport" aria-label="VR 전시실. 드래그하여 둘러보세요.">
+  <div class="world" id="world"><div class="room" id="room">
+   <div class="ceiling"></div><div class="floor"></div>
+   <div class="wall front"><div class="room-title">SMART WATER PURIFIER<small>3조 · IOT PROJECT EXHIBITION</small></div><div class="exhibit"><span class="tag">WELCOME TO OUR EXHIBITION</span><h2>물을 더 똑똑하게,<br>생활을 더 건강하게.</h2><p>센서와 사물인터넷 기술을 활용해 정수기 상태를 확인하고, 더 편리한 물 이용 경험을 만드는 3조의 IoT 스마트 정수기 프로젝트입니다.</p><div class="feature-list"><span>01 · 스마트 모니터링</span><span>02 · IoT 연결</span><span>03 · 편리한 관리</span><span>04 · 사용자 중심 설계</span></div></div></div>
+   <div class="wall back"><div class="exhibit"><span class="tag">PROJECT OVERVIEW</span><h2>프로젝트 소개</h2><p>우리 팀은 정수기의 주요 정보를 데이터로 확인하고, 연결된 기기를 통해 관리 편의성을 높이는 시스템을 목표로 합니다.</p><div class="feature-list"><span>프로젝트명 : IoT 스마트 정수기</span><span>제작 팀 : 3조</span><span>핵심 기술 : 센서 + 네트워크</span><span>목표 : 스마트한 정수기 관리</span></div></div></div>
+   <div class="wall left"><div class="exhibit"><span class="tag">KEY FEATURES</span><h2>핵심 기능</h2><p>실제 구현한 기능과 시연 장면을 소개하는 공간입니다.</p><div class="feature-list"><span>📡 실시간 상태 확인</span><span>💧 물 관련 정보 감지</span><span>🔔 상태 알림</span><span>📱 스마트 연결 및 제어</span></div></div></div>
+   <div class="wall right"><div class="exhibit"><span class="tag">HOW IT WORKS</span><h2>작동 원리</h2><p>센서가 정보를 감지하고 제어 보드가 데이터를 처리한 뒤, 네트워크를 통해 사용자에게 전달하는 IoT 구조입니다.</p><div class="feature-list"><span>01 감지</span><span>02 데이터 처리</span><span>03 정보 전송</span><span>04 확인 및 제어</span></div></div></div>
+   <div class="halo"></div><div class="pedestal"><div class="base"></div><div class="top"></div></div>
+   <div class="purifier"><div class="purifier-body"></div><div class="purifier-screen">WATER QUALITY<b>GOOD</b>CONNECTED</div><div class="purifier-tap"></div><div class="purifier-drop"></div></div>
+   <div class="neon-line"></div>
+  </div></div>
+ </div>
+ <div class="hud"><strong id="roomName">3조 스마트 정수기 전시실</strong><div class="caption" id="roomCaption">가운데 전시물을 중심으로 360° 둘러보세요</div></div>
+ <div class="hint">드래그하여 둘러보기 · 휠로 줌 인/아웃<br>← → 키로 회전 · 전시 버튼을 눌러 이동</div>
+ <div class="controlbar">
+  <button class="active" data-yaw="0" data-name="3조 스마트 정수기 전시실" data-caption="가운데 전시물을 중심으로 360° 둘러보세요">⌂ 로비</button>
+  <button data-yaw="0" data-name="프로젝트 소개" data-caption="3조 IoT 스마트 정수기의 목표와 제작 의도를 확인하세요">프로젝트</button>
+  <button data-yaw="-90" data-name="핵심 기능" data-caption="스마트 정수기의 주요 기능을 살펴보세요">핵심 기능</button>
+  <button data-yaw="180" data-name="프로젝트 개요" data-caption="프로젝트 구성과 핵심 기술을 확인하세요">프로젝트 개요</button>
+  <button data-yaw="90" data-name="작동 원리" data-caption="센서부터 사용자 화면까지의 데이터 흐름">작동 원리</button>
+  <button id="videoOpen">▶ 동작 영상</button><button id="pptOpen">▤ 발표 자료</button>
+ </div>
+ <div class="overlay" id="videoModal"><div class="modal"><div class="modal-head"><div><span class="tag">PROJECT DEMO</span><h2>스마트 정수기 동작 영상</h2></div><button class="close" data-close>✕</button></div><div id="videoHolder"><div class="video-frame" style="aspect-ratio:16/9;display:grid;place-items:center;color:#a9c5d0;background:#020a10">아직 동영상이 첨부되지 않았습니다.</div></div><div class="upload-row"><label for="videoFile">동영상 파일 선택</label><input type="file" id="videoFile" accept="video/*"><span style="font-size:11px;color:#a9c5d0">MP4, WebM 등</span></div><p>선택한 파일은 이 브라우저에서 미리 재생됩니다. 웹사이트에 공개하려면 영상 파일도 웹 호스팅 공간에 업로드해야 합니다.</p></div></div>
+ <div class="overlay" id="pptModal"><div class="modal"><div class="modal-head"><div><span class="tag">PRESENTATION</span><h2>프로젝트 발표 자료</h2></div><button class="close" data-close>✕</button></div><div class="poster-grid"><div class="poster"><b>01 / INTRODUCTION</b><h3>프로젝트 배경</h3><p>IoT 기술을 활용한 스마트 정수기 제작 배경과 해결하고자 하는 문제를 소개합니다.</p></div><div class="poster"><b>02 / HARDWARE</b><h3>하드웨어 구성</h3><p>실제 사용한 제어 보드, 센서, 정수 장치 및 연결 구조를 정리합니다.</p></div><div class="poster"><b>03 / SOFTWARE</b><h3>소프트웨어 구성</h3><p>데이터 수집, 처리, 통신 및 사용자 인터페이스의 구현 내용을 소개합니다.</p></div><div class="poster"><b>04 / DEMONSTRATION</b><h3>구현 결과</h3><p>실제 동작 영상과 프로젝트의 결과 및 향후 개선 방향을 공유합니다.</p></div></div><div class="upload-row"><label for="pptFile">PPT / PDF 첨부</label><input type="file" id="pptFile" accept=".ppt,.pptx,.pdf"><span id="pptStatus" style="font-size:11px;color:#a9c5d0">발표 자료를 선택하세요.</span></div></div></div>
+</div>
+<script>
+const viewport=document.getElementById('viewport'),world=document.getElementById('world');
+let yaw=0,pitch=0,zoom=950,drag=false,lastX=0,lastY=0,startX=0,startY=0;
+function render(){world.style.transform=`translateZ(${zoom-950}px) rotateX(${pitch}deg) rotateY(${yaw}deg)`;}
+function setYaw(v){yaw=v;pitch=0;render()}
+viewport.addEventListener('pointerdown',e=>{drag=true;lastX=e.clientX;lastY=e.clientY;startX=e.clientX;startY=e.clientY;viewport.classList.add('dragging');viewport.setPointerCapture(e.pointerId)});
+viewport.addEventListener('pointermove',e=>{if(!drag)return;let dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;yaw+=dx*.22;pitch=Math.max(-24,Math.min(24,pitch-dy*.16));render()});
+function endDrag(){drag=false;viewport.classList.remove('dragging')}
+viewport.addEventListener('pointerup',endDrag);viewport.addEventListener('pointercancel',endDrag);
+viewport.addEventListener('wheel',e=>{zoom=Math.max(650,Math.min(1250,zoom-e.deltaY*.45));render()},{passive:true});
+document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')yaw-=12;if(e.key==='ArrowRight')yaw+=12;if(e.key==='ArrowUp')pitch=Math.min(24,pitch+5);if(e.key==='ArrowDown')pitch=Math.max(-24,pitch-5);render();if(e.key==='Escape')closeModals()});
+document.querySelectorAll('[data-yaw]').forEach(b=>b.addEventListener('click',()=>{setYaw(Number(b.dataset.yaw));document.querySelectorAll('[data-yaw]').forEach(x=>x.classList.toggle('active',x===b));document.getElementById('roomName').textContent=b.dataset.name;document.getElementById('roomCaption').textContent=b.dataset.caption}));
+const videoModal=document.getElementById('videoModal'),pptModal=document.getElementById('pptModal');
+function closeModals(){document.querySelectorAll('.overlay').forEach(x=>x.classList.remove('show'));const v=document.getElementById('demoVideo');if(v)v.pause()}
+document.getElementById('videoOpen').onclick=()=>videoModal.classList.add('show');
+document.getElementById('pptOpen').onclick=()=>pptModal.classList.add('show');
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeModals);
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModals()}));
+document.getElementById('videoFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const url=URL.createObjectURL(f);document.getElementById('videoHolder').innerHTML='<video id="demoVideo" class="video-frame" controls playsinline><source src="'+url+'"></video>'});
+document.getElementById('pptFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;document.getElementById('pptStatus').textContent='선택됨: '+f.name;let a=document.getElementById('pptDownload');if(!a){a=document.createElement('a');a.id='pptDownload';a.className='pill';a.style.display='inline-block';a.style.textDecoration='none';a.style.marginTop='12px';document.querySelector('#pptModal .modal').appendChild(a)}a.href=URL.createObjectURL(f);a.download=f.name;a.textContent='자료 열기 / 다운로드'});
+document.getElementById('fullBtn').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()};
+let bright=false;document.getElementById('themeBtn').onclick=()=>{bright=!bright;document.querySelector('.app').style.filter=bright?'brightness(1.35) saturate(.9)':'none';document.getElementById('themeBtn').classList.toggle('active',bright)};
+render();
+</script>
+</body>
+</html>
